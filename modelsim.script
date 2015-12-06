@@ -1,0 +1,128 @@
+vlog *.v
+
+
+vsim -voptargs=+acc work.ecc_tb
+ 
+virtual type {
+{13'b0000000000001 IDLE}
+{13'b0000000000010 DATAIN}
+{13'b0000000000100 CYCLE1}
+{13'b0000000001000 CYCLE2}
+{13'b0000000010000 CYCLE3}
+{13'b0000000100000 CYCLE4}
+{13'b0000001000000 LP1}
+{13'b0000010000000 LP2}
+{13'b0000100000000 FIRSTLOOP}
+{13'b0001000000000 LOOPSTART}
+{13'b0010000000000 LOOPMID}
+{13'b0100000000000 NOPLOOP}
+{13'b1000000000000 RYENABLE}
+} FSM_MAIN
+
+	
+virtual function {(FSM_MAIN)/ecc_ins/ecc_top_ins/main_ins/state} main_state
+
+#option code for all cores
+virtual type {
+{3'b111 MUL}
+{3'b110 SMUL}
+{3'b101 SQA}
+{3'b100 ADD}
+{3'b011 SS}
+{3'b010 LOOP}
+{3'b001 MV}
+{3'b000 NOP}
+} OPT
+
+# instruction for CORE1
+
+virtual type {
+{2'b11 DA1_S}
+{2'b10 DA1_XX}
+{2'b01 DA1_ZZ}
+{2'b00 RES}
+} CORE1_DES
+
+virtual type {
+{8'b00000111 SA1_ZZ}
+{8'b00000110 SA3_ZZ}
+{8'b00000101 SA1_XX}
+{8'b00000100 SA3_XX}
+{8'b00000011 Rx}
+{8'b00000010 Ry}
+{8'b00000001 A1_S}
+{8'b00000000 A2_S}
+{8'b00100000 A1_SS_OUT}
+{8'b00010000 A1_BP_OUT1}
+{8'b00001000 A2_BP_OUT1}
+{8'b10000000 A3_BP_OUT2}
+{8'b01000000 A1_BP_OUT2}
+} CORE1_SOURCE
+
+virtual function {(OPT)/ecc_ins/ecc_top_ins/core1_ins/instruction[20:18]} V_CORE1_OPT
+virtual function {(CORE1_DES)/ecc_ins/ecc_top_ins/core1_ins/instruction[17:16]} V_CORE1_DES
+virtual function {(CORE1_SOURCE)/ecc_ins/ecc_top_ins/core1_ins/instruction[15:8]} V_CORE1_DA
+virtual function {(CORE1_SOURCE)/ecc_ins/ecc_top_ins/core1_ins/instruction[7:0]} V_CORE1_DB
+
+# instruction for CORE2
+
+virtual type {
+{1'b0 RES}
+{1'b1 DA2_S}
+} CORE2_DES
+
+virtual type {
+{8'b00000111 SA1_ZZ}
+{8'b00000110 SA3_ZZ}
+{8'b00000101 SA1_XX}
+{8'b00000100 SA3_XX}
+{8'b00000011 Rx}
+{8'b00000010 SA2_S}
+{8'b00000001 Ry}
+{8'b00100000 A2_SS_OUT}
+{8'b00010000 A2_BP_OUT1}
+{8'b00001000 A2_BP_OUT2}
+{8'b10000000 A3_BP_OUT2}
+{8'b01000000 A1_BP_OUT2}
+} CORE2_SOURCE
+
+
+virtual function {(OPT)/ecc_ins/ecc_top_ins/core2_ins/instruction[19:17]} V_CORE2_OPT
+virtual function {(CORE2_DES)/ecc_ins/ecc_top_ins/core2_ins/instruction[16]} V_CORE2_DES
+virtual function {(CORE2_SOURCE)/ecc_ins/ecc_top_ins/core2_ins/instruction[15:8]} V_CORE2_DA
+virtual function {(CORE2_SOURCE)/ecc_ins/ecc_top_ins/core2_ins/instruction[7:0]} V_CORE2_DB
+
+# instruction for CORE3
+
+virtual type {
+{2'b11 DA3_S}
+{2'b10 DA3_XX}
+{2'b01 DA3_ZZ}
+{2'b00 RES}
+} CORE3_DES
+
+virtual type {
+{7'b0000111 SA1_ZZ}
+{7'b0000110 SA3_ZZ}
+{7'b0000101 SA1_XX}
+{7'b0000100 SA3_XX}
+{7'b0000011 Rx}
+{7'b0000010 SA3_S}
+{7'b0000001 Rb}
+{7'b0000000 Ry}
+{7'b0001000 A3_BP_OUT1}
+{7'b0010000 A3_SS_OUT}
+{7'b1000000 A3_BP_OUT2}
+{7'b0100000 A1_BP_OUT2}
+} CORE3_SOURCE
+
+
+virtual function {(OPT)/ecc_ins/ecc_top_ins/core3_ins/instruction[18:16]} V_CORE3_OPT
+virtual function {(CORE3_DES)/ecc_ins/ecc_top_ins/core3_ins/instruction[15:14]} V_CORE3_DES
+virtual function {(CORE3_SOURCE)/ecc_ins/ecc_top_ins/core3_ins/instruction[13:7]} V_CORE3_DA
+virtual function {(CORE3_SOURCE)/ecc_ins/ecc_top_ins/core3_ins/instruction[6:0]} V_CORE3_DB
+
+
+
+
+	
